@@ -16,7 +16,7 @@ testnet-alonzo-genesis.json:
 	curl -O -J https://hydra.iohk.io/build/7654130/download/1/testnet-alonzo-genesis.json
 
 docker_run: docker_image docker_volume
-	docker run --mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' -it hydra_setup bash
+	docker run --name hydra --mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' -it hydra_setup bash
 
 docker_volume:
 	docker volume create cardano-db

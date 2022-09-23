@@ -16,3 +16,11 @@ This will build the docker image, create a docker volume to store persistent dat
 a new container from the image with the volume attached.
 
 You should see cardano blockchain sync logs in the terminal.
+
+## Use
+
+To query the blockchain tip of our cardano-node:
+
+```bash
+#> docker exec -it hydra /srv/cardano/cardano-cli query tip --testnet-magic 1097911063
+```
