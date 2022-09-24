@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+docker run --rm -it \
+           --mount 'type=volume,src=reckless-secret-storage,dst=/srv/var/cardano/secrets' \
+           debian:latest cat /srv/var/cardano/secrets/payment.addr
+

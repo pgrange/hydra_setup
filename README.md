@@ -32,6 +32,18 @@ for now and just do a full sync from scratch.
 
 # Use
 
+Your Cardano address to receive payments:
+
+```bash
+dump_address
+```
+
+Your Cardano verification key:
+
+```bash
+dump_verification_key
+```
+
 To query the blockchain tip of our cardano-node:
 
 ```bash

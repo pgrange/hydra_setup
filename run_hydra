@@ -2,8 +2,15 @@
 
 set -euo pipefail
 
+PATH=$PATH:/srv/cardano/
+
+secrets_dir=/srv/var/cardano/secrets
+verification_key_file="${secrets_dir}/payment.vkey"
+signing_key_file="${secrets_dir}/payment.skey"
+address_file="${secrets_dir}/payment.addr"
+
 run_cardano() {
-  /srv/cardano/cardano-node run \
+  cardano-node run \
     --topology      /srv/etc/cardano/cardano-node/topology.json \
     --database-path /srv/var/cardano/db \
     --socket-path   /srv/var/cardano/node.socket \
@@ -12,4 +19,32 @@ run_cardano() {
     --config        /srv/etc/cardano/cardano-node/config.json
 }
 
+gen_cardano_keys() {
+  cardano-cli address key-gen \
+  --verification-key-file ${verification_key_file} \
+  --signing-key-file      ${signing_key_file}
+}
+
+gen_cardano_address() {
+  cardano-cli address build \
+  --payment-verification-key-file ${verification_key_file} \
+  --out-file                      ${address_file} \
+  --testnet-magic 2
+}
+
+get_cardano_address() {
+
+  test -x "${verification_key_file}" || gen_cardano_keys
+  test -x "${address_file}"          || gen_cardano_address
+
+
+  echo cat ${verification_key_file} >&2
+  cat      ${verification_key_file} >&2
+  echo                              >&2
+  echo cat ${address_file}          >&2
+  cat      ${address_file}          >&2
+  echo                              >&2
+}
+
+get_cardano_address
 run_cardano
