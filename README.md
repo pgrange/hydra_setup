@@ -1,7 +1,10 @@
 This will run a cardano-node for the preview network.
 
-To get test Ada on the preview network see:
-https://docs.cardano.org/cardano-testnet/tools/faucet #FIXME
+To get test Ada on the preview network see (select _preview_):
+https://docs.cardano.org/cardano-testnet/tools/faucet
+
+This wallet is pretty cool to quickly switch from cardano networks:
+https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo
 
 # Pre-requisites
 
@@ -32,5 +35,5 @@ for now and just do a full sync from scratch.
 To query the blockchain tip of our cardano-node:
 
 ```bash
-#> docker exec -it hydra /srv/cardano/cardano-cli query tip --testnet-magic 1097911063
+#> docker exec -it hydra /srv/cardano/cardano-cli query tip --testnet-magic 2
 ```
