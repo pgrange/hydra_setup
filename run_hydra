@@ -4,12 +4,12 @@ set -euo pipefail
 
 run_cardano() {
   /srv/cardano/cardano-node run \
-    --topology      /srv/etc/cardano/testnet-topology.json \
+    --topology      /srv/etc/cardano/cardano-node/topology.json \
     --database-path /srv/var/cardano/db \
     --socket-path   /srv/var/cardano/node.socket \
     --host-addr     127.0.0.1 \
     --port          3001 \
-    --config        /srv/etc/cardano/testnet-config.json
+    --config        /srv/etc/cardano/cardano-node/config.json
 }
 
 run_cardano

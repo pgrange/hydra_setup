@@ -6,17 +6,11 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ADD cardano-node.tar.gz /srv/cardano
-ADD testnet-topology.json \
-    testnet-shelley-genesis.json \
-    testnet-config.json \
-    testnet-byron-genesis.json \
-    testnet-alonzo-genesis.json \
-    /srv/etc/cardano/
+ADD cardano-configurations/network/preview \
+    /srv/etc/cardano
 
 ENV CARDANO_NODE_SOCKET_PATH=/srv/var/cardano/node.socket
 ADD run_hydra /srv/bin/run_hydra
-
-#TODO volume for data storage
 
 # FIXME REMOVE debug
 RUN apt update -y && apt install -y procps vim
