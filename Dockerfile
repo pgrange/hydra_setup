@@ -101,6 +101,10 @@ RUN mkdir -p /srv/var/cardano/
 
 RUN mkdir -p /srv/hydra
 COPY --from=compilation /hydra-node /srv/hydra/
+# hydra-node is not statically linked so we'll need those:
+COPY --from=compilation /usr/local/lib/libsodium.so.23 /usr/local/lib/libsodium.so.23
+COPY --from=compilation /usr/local/lib/libsecp256k1.so.0 /usr/local/lib/libsecp256k1.so.0
+ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 # ---------------------------------------------------------------------
 

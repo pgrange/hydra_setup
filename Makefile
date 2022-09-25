@@ -10,7 +10,7 @@ build: build_dependencies
 # We split build from its dependencies to ease github action integration
 build_dependencies: Dockerfile cardano-node.tar.gz ghcup_install
 
-run: image volume
+run: build volume
 	docker run -p 3001:3001 --rm --name hydra \
 	--mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' \
 	--mount 'type=volume,src=reckless-secret-storage,dst=/srv/var/cardano/secrets' \
