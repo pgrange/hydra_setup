@@ -51,7 +51,7 @@ docker run --rm --name hydra \
            --mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' \
            --mount 'type=volume,src=reckless-secret-storage,dst=/srv/var/cardano/secrets' \
            --mount 'type=volume,src=hydra-peers,dst=/srv/etc/hydra/peers' \
-           -it ghcr.io/pgrange/hydra_setup:compile_hydra
+           -it ghcr.io/pgrange/hydra_setup:latest
 ```
 
 The first time you launch the container, it will generate cardano keys and address and hydra keys.
