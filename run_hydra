@@ -2,12 +2,16 @@
 
 set -euo pipefail
 
-PATH=$PATH:/srv/cardano/
+PATH=$PATH:/srv/cardano/:/srv/hydra/
 
 secrets_dir=/srv/var/cardano/secrets
-verification_key_file="${secrets_dir}/payment.vkey"
-signing_key_file="${secrets_dir}/payment.skey"
-address_file="${secrets_dir}/payment.addr"
+
+cardano_verification_key_file="${secrets_dir}/payment.vkey"
+cardano_signing_key_file="${secrets_dir}/payment.skey"
+cardano_address_file="${secrets_dir}/payment.addr"
+
+hydra_key_file_prefix="${secrets_dir}/hydra"
+hydra_verification_key_file="${hydra_key_file_prefix}.vk"
 
 run_cardano() {
   cardano-node run \
@@ -21,32 +25,49 @@ run_cardano() {
 
 gen_cardano_keys() {
   cardano-cli address key-gen \
-  --verification-key-file ${verification_key_file} \
-  --signing-key-file      ${signing_key_file}
+  --verification-key-file ${cardano_verification_key_file} \
+  --signing-key-file      ${cardano_signing_key_file}
 }
 
 gen_cardano_address() {
   cardano-cli address build \
-  --payment-verification-key-file ${verification_key_file} \
-  --out-file                      ${address_file} \
+  --payment-verification-key-file ${cardano_verification_key_file} \
+  --out-file                      ${cardano_address_file} \
   --testnet-magic 2
 }
 
-get_cardano_address() {
+get_cardano_identity() {
 
-  test -x "${verification_key_file}" || gen_cardano_keys
-  test -x "${address_file}"          || gen_cardano_address
+  test -x "${cardano_verification_key_file}" || gen_cardano_keys
+  test -x "${cardano_address_file}"          || gen_cardano_address
 
 
-  echo cat ${verification_key_file} >&2
-  cat      ${verification_key_file} >&2
-  echo                              >&2
-  echo cat ${address_file}          >&2
-  cat      ${address_file}          >&2
-  echo                              >&2
+  echo "# my Cardano versification key"     >&2
+  echo "cat << EOF >my-cardano-key.vk"      >&2
+  cat      ${cardano_verification_key_file} >&2
+  echo "EOF"                                >&2
+
+  echo "# my Cardano address"        >&2
+  echo "cat << EOF >my-cardano.addr" >&2
+  cat      ${cardano_address_file}   >&2
+  echo                               >&2
+  echo "EOF"                         >&2
 }
 
-get_cardano_address
+gen_hydra_keys() {
+  hydra-tools gen-hydra-key --output-file "${hydra_key_file_prefix}"
+}
+
+get_hydra_verification_key() {
+  test -x "${hydra_verification_key_file}" || gen_hydra_keys
+
+  echo "# my Hydra verification key" >&2
+  echo "echo '$(cat  ${hydra_verification_key_file} | base64)' | base64 -d > my-hydra-key.vk" >&2
+}
+
+get_cardano_identity
+get_hydra_verification_key
+
 run_cardano
 
 wait -n # exit when any child exists. bash version >= 4.3

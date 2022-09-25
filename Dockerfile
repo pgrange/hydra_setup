@@ -67,9 +67,18 @@ RUN git checkout 0.7.0
 RUN cabal configure
 RUN cabal update
 RUN cabal build hydra-node
+# TODO hydra-tools is not yet available in stable version 0.7.0
+#      we should directly compile from master above and not 0.7.0
+#      just keeping it that way to benefit from docker cache on my
+#      machine and save 2 hours of compilation
+RUN git switch master
+RUN cabal build hydra-tools
+
 # Make the following binaries available:
 # * /hydra-node
+# * /hydra-tools
 RUN find dist-newstyle/ -type f -executable -name hydra-node -exec cp {} / \;
+RUN find dist-newstyle/ -type f -executable -name hydra-tools -exec cp {} / \;
 
 # ---------------------------------------------------------------------
 # - install Cardano                                                   -
@@ -101,8 +110,10 @@ RUN mkdir -p /srv/var/cardano/
 
 RUN mkdir -p /srv/hydra
 COPY --from=compilation /hydra-node /srv/hydra/
+COPY --from=compilation /hydra-tools /srv/hydra/
+
 # hydra-node is not statically linked so we'll need those:
-COPY --from=compilation /usr/local/lib/libsodium.so.23 /usr/local/lib/libsodium.so.23
+COPY --from=compilation /usr/local/lib/libsodium.so.23   /usr/local/lib/libsodium.so.23
 COPY --from=compilation /usr/local/lib/libsecp256k1.so.0 /usr/local/lib/libsecp256k1.so.0
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
