@@ -1,22 +1,22 @@
-This will run a cardano-node for the preview network.
+**This is for test only**
+
+Do not use any of the following code, commands or tools to handle actual funds
+on the production network.
+
+This will run a cardano-node for the preview network and a hydra-node on top of it.
 
 To get test Ada on the preview network see (select _preview_):
 https://docs.cardano.org/cardano-testnet/tools/faucet
 
-This wallet is pretty cool to quickly switch from cardano networks:
-https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo
-
-# Pre-requisites
-
-You'll need the following software on your machine:
-* [docker](https://docker.com);
-* [GNU Make](https://www.gnu.org/software/make/);
-* [git](https://git-scm.com).
+Since you need a wallet to receive fund and then play on top of Cardana,
+I found the [Nami](https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo)
+wallet pretty cool as it is easy to use and allow to switch quickly between cardano test networks.
 
 # Run
 
 ## Pre-requisites
 
+You'll need [docker](https://docker.com) on your machine.
 To run docker image, you'll need to create several persistent volumes:
 
 ```bash
@@ -78,8 +78,6 @@ echo 'd9QPt7PgxQoWkJtlcWXI77J9gDdF7Fv/HlGzaasyMlk=' | base64 -d > my-hydra-key.v
 
 ```
 
-TODO explain how to configure the peers.
-
 # Use
 
 Your Cardano address to receive payments:
@@ -102,19 +100,23 @@ To query the blockchain tip of our cardano-node:
 
 # Compile
 
+## Pre-requisites
+
+You'll need the following software on your machine:
+* [GNU Make](https://www.gnu.org/software/make/);
+* [git](https://git-scm.com).
+
 To build the docker image and start the node (be patient, hydra-node compilation can take up to one or two hours):
  
 ```bash
 #> make run
 ```
 
-This will build the docker image, create a docker volume to store persistent data and start
-a new container from the image with the volume attached.
+This will build the docker image, create the docker volumes needed to store persistent data and start
+a new container from the image with the volumes attached.
 
-You should see cardano blockchain sync logs in the terminal.
+You should see cardano blockchain sync logs and hydra logs in the terminal.
 
-As of end of september 2022 the preview network it takes 10 minutes for a fresh cardano-node to be fully synchronized.
+As of end of september 2022 the preview network takes 10 minutes for a fresh cardano-node to be fully synchronized.
 So for the sake of simplicity, we do not use [mithril](https://github.com/input-output-hk/mithril/tree/main/mithril-client)
 for now and just do a full sync from scratch.
-
-
