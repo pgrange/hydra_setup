@@ -98,10 +98,6 @@ ADD cardano-configurations/network/preview \
 ENV CARDANO_NODE_SOCKET_PATH=/srv/var/cardano/node.socket
 ADD run_hydra /srv/bin/run_hydra
 
-# FIXME REMOVE debug
-RUN apt update -y && apt install -y procps vim
-# FIXME REMOVE debug
-
 RUN mkdir -p /srv/var/cardano/
 
 # ---------------------------------------------------------------------
