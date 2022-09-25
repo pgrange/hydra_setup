@@ -3,7 +3,7 @@ ifneq ( $(shell git submodule status | grep '^[-+]' -c), 0 )
   $(shell git submodule update --init)
 endif
 
-build: docker_build_dependencies
+build: build_dependencies
 	docker build . -t pgrange_cardano-node
 
 
@@ -20,7 +20,8 @@ cardano-node.tar.gz:
 	curl https://hydra.iohk.io/build/16338142/download/1/cardano-node-1.35.0-linux.tar.gz -o cardano-node.tar.gz
 
 ghcup_install:
-	curl https://get-ghcup.haskell.org -o gcup_install
+	curl https://get-ghcup.haskell.org -o ghcup_install
+	chmod +x ghcup_install
 
 volume:
 	docker volume create cardano-db
