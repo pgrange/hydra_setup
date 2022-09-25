@@ -20,9 +20,9 @@ You'll need [docker](https://docker.com) on your machine.
 To run docker image, you'll need to create several persistent volumes:
 
 ```bash
-  docker volume create cardano-db
-  docker volume create reckless-secret-storage
-  docker volume create hydra-peers
+docker volume create cardano-db
+docker volume create reckless-secret-storage
+docker volume create hydra-peers
 ```
 
 You will then need to setup configuration for your peers you want to open
@@ -47,11 +47,11 @@ In a peer directory, store the following three files:
 Launch a container, attaching these volumes where appropriate:
 
 ```bash
-  docker run --rm --name hydra \
-             --mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' \
-             --mount 'type=volume,src=reckless-secret-storage,dst=/srv/var/cardano/secrets' \
-	     --mount 'type=volume,src=hydra-peers,dst=/srv/etc/hydra/peers' \
-             -it ghcr.io/pgrange/hydra_setup:compile_hydra
+docker run --rm --name hydra \
+           --mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' \
+           --mount 'type=volume,src=reckless-secret-storage,dst=/srv/var/cardano/secrets' \
+           --mount 'type=volume,src=hydra-peers,dst=/srv/etc/hydra/peers' \
+           -it ghcr.io/pgrange/hydra_setup:compile_hydra
 ```
 
 The first time you launch the container, it will generate cardano keys and address and hydra keys.
@@ -83,7 +83,7 @@ echo 'd9QPt7PgxQoWkJtlcWXI77J9gDdF7Fv/HlGzaasyMlk=' | base64 -d > my-hydra-key.v
 To query the blockchain tip of our cardano-node:
 
 ```bash
-#> docker exec -it hydra /srv/cardano/cardano-cli query tip --testnet-magic 2
+docker exec -it hydra /srv/cardano/cardano-cli query tip --testnet-magic 2
 ```
 
 # Compile
@@ -97,7 +97,7 @@ You'll need the following software on your machine:
 To build the docker image and start the node (be patient, hydra-node compilation can take up to one or two hours):
  
 ```bash
-#> make run
+make run
 ```
 
 This will build the docker image, create the docker volumes needed to store persistent data and start
