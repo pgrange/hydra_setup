@@ -8,7 +8,7 @@ This will run a cardano-node for the preview network and a hydra-node on top of 
 To get test Ada on the preview network see (select _preview_):
 https://docs.cardano.org/cardano-testnet/tools/faucet
 
-Since you need a wallet to receive fund and then play on top of Cardana,
+Since you need a wallet to receive fund and then play on top of Cardano,
 I found the [Nami](https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo)
 wallet pretty cool as it is easy to use and allow to switch quickly between cardano test networks.
 
