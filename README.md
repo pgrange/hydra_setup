@@ -15,15 +15,70 @@ You'll need the following software on your machine:
 
 # Run
 
-To run docker image, you'll need to attach volumes in some specific path:
+## Pre-requisites
+
+To run docker image, you'll need to create several persistent volumes:
+
 ```bash
   docker volume create cardano-db
   docker volume create reckless-secret-storage
+  docker volume create hydra-peers
+```
+
+You will then need to setup configuration for your peers you want to open
+your hydra head with. To do so, you may start a new container with the
+peers configuration attached to it:
+
+```bash
+docker run -it --mount 'type=volume,src=hydra-peers,dst=/srv/etc/hydra/peers' debian bash
+```
+
+Peer configuration must be added in `/srv/etc/hydra/peers/`.
+Create one directory per peer, named after the peers' name.
+Do not store anything else in this directory
+
+In a peer directory, store the followin three files:
+ * ip         - contain ip:port address of the peer
+ * cardano.vk - contains the cardano verification key of the peer
+ * hydra.vk   - contains the hydra verification key of the peer
+
+## Start the node
+
+The, run the image by attaching these volumes where appropriate:
+
+```bash
   docker run --rm --name hydra \
              --mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' \
              --mount 'type=volume,src=reckless-secret-storage,dst=/srv/var/cardano/secrets' \
+	     --mount 'type=volume,src=hydra-peers,dst=/srv/etc/hydra/peers' \
              -it ghcr.io/pgrange/hydra_setup:compile_hydra
 ```
+
+The first time you launch the container, it will generate cardano keys and address and hydra keys.
+These information will be displayed when you launch the container so that you may copy them and share
+them with your friends you want to create a hydra head with. This will look like this:
+
+```
+# my Cardano versification key
+cat << EOF >my-cardano-key.vk
+{
+    "type": "PaymentVerificationKeyShelley_ed25519",
+    "description": "Payment Verification Key",
+    "cborHex": "58208e16ebbd6d76b7e620dc3d56e39e5416869559a89558b1c716656864ed29be68"
+}
+EOF
+
+# my Cardano address
+cat << EOF >my-cardano.addr
+addr_test1vq7xfu08xt2qqlfgt2rxm66xncus9qy0ecg329n4pm9z55s94wac4
+EOF
+
+# my Hydra verification key
+echo 'd9QPt7PgxQoWkJtlcWXI77J9gDdF7Fv/HlGzaasyMlk=' | base64 -d > my-hydra-key.vk
+
+```
+
+TODO explain how to configure the peers.
 
 # Use
 

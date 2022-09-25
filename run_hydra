@@ -10,10 +10,60 @@ peers_config_dir=/srv/etc/hydra/peers
 cardano_verification_key_file="${secrets_dir}/payment.vkey"
 cardano_signing_key_file="${secrets_dir}/payment.skey"
 cardano_address_file="${secrets_dir}/payment.addr"
-
 hydra_key_file_prefix="${secrets_dir}/hydra"
 hydra_verification_key_file="${hydra_key_file_prefix}.vk"
 hydra_signing_key_file="${hydra_key_file_prefix}.sk"
+
+main() {
+  display_cardano_identity
+  display_hydra_verification_key
+  
+  start_cardano
+  run_hydra
+  
+  # wait -n # exit when any child exists. bash version >= 4.3
+}
+
+display_cardano_identity() {
+  test -e "${cardano_verification_key_file}" || gen_cardano_keys
+  test -e "${cardano_address_file}"          || gen_cardano_address
+
+  echo "# my Cardano versification key"     >&2
+  echo "cat << EOF >my-cardano-key.vk"      >&2
+  cat      ${cardano_verification_key_file} >&2
+  echo "EOF"                                >&2
+  echo                                      >&2
+
+  echo "# my Cardano address"        >&2
+  echo "cat << EOF >my-cardano.addr" >&2
+  cat      ${cardano_address_file}   >&2
+  echo                               >&2
+  echo "EOF"                         >&2
+  echo                               >&2
+}
+gen_cardano_keys() {
+  cardano-cli address key-gen \
+  --verification-key-file ${cardano_verification_key_file} \
+  --signing-key-file      ${cardano_signing_key_file}
+}
+gen_cardano_address() {
+  cardano-cli address build \
+  --payment-verification-key-file ${cardano_verification_key_file} \
+  --out-file                      ${cardano_address_file} \
+  --testnet-magic 2
+}
+
+display_hydra_verification_key() {
+  test -e "${hydra_verification_key_file}" || gen_hydra_keys
+
+  echo "# my Hydra verification key" >&2
+  echo "echo '$(cat  ${hydra_verification_key_file} | base64)' | base64 -d > my-hydra-key.vk" >&2
+  echo >&2
+}
+gen_hydra_keys() {
+  hydra-tools gen-hydra-key --output-file "${hydra_key_file_prefix}"
+}
+
 
 start_cardano() {
   cardano-node run \
@@ -26,7 +76,6 @@ start_cardano() {
   &
   wait_for_cardano_to_start
 }
-
 wait_for_cardano_to_start() {
   wait_for_cardano_socket() {
     while ! test -e /srv/var/cardano/node.socket
@@ -36,55 +85,14 @@ wait_for_cardano_to_start() {
   }
   export -f wait_for_cardano_socket
 
-  if ! timeout 10 bash -c wait_for_cardano_socket
+  if ! timeout 60 bash -c wait_for_cardano_socket
   then
     usage "timeout while waiting for cardano-node to start"
   fi
 }
 
-gen_cardano_keys() {
-  cardano-cli address key-gen \
-  --verification-key-file ${cardano_verification_key_file} \
-  --signing-key-file      ${cardano_signing_key_file}
-}
-
-gen_cardano_address() {
-  cardano-cli address build \
-  --payment-verification-key-file ${cardano_verification_key_file} \
-  --out-file                      ${cardano_address_file} \
-  --testnet-magic 2
-}
-
-get_cardano_identity() {
-
-  test -e "${cardano_verification_key_file}" || gen_cardano_keys
-  test -e "${cardano_address_file}"          || gen_cardano_address
-
-
-  echo "# my Cardano versification key"     >&2
-  echo "cat << EOF >my-cardano-key.vk"      >&2
-  cat      ${cardano_verification_key_file} >&2
-  echo "EOF"                                >&2
-
-  echo "# my Cardano address"        >&2
-  echo "cat << EOF >my-cardano.addr" >&2
-  cat      ${cardano_address_file}   >&2
-  echo                               >&2
-  echo "EOF"                         >&2
-}
-
-gen_hydra_keys() {
-  hydra-tools gen-hydra-key --output-file "${hydra_key_file_prefix}"
-}
-
-get_hydra_verification_key() {
-  test -e "${hydra_verification_key_file}" || gen_hydra_keys
-
-  echo "# my Hydra verification key" >&2
-  echo "echo '$(cat  ${hydra_verification_key_file} | base64)' | base64 -d > my-hydra-key.vk" >&2
-}
-
 run_hydra() {
+  check_peers_configuration
   hydra-node           \
     --node-id 1          \
     --api-host 127.0.0.1 \
@@ -96,11 +104,18 @@ run_hydra() {
     --ledger-protocol-parameters /srv/etc/hydra/protocol-parameters.json \
     --network-id 2 \
     --node-socket /srv/var/cardano/node.socket \
-    $(peers_parameters)
+    $(hydra_peers_parameters)
 }
-
-peers_parameters() {
-  for peer_dir in "${peers_config_dir}"/*
+check_peers_configuration() {
+  for peer_dir in $(peer_config_dirs)
+  do
+    test -e ${peer_dir}/ip         || peers_usage "no ip file for peer ${peer_dir}"
+    test -e ${peer_dir}/hydra.vk   || peers_usage "no hydra.vk file for peer ${peer_dir}"
+    test -e ${peer_dir}/cardano.vk || peers_usage "no cardano.vk file for peer ${peer_dir}"
+  done
+}
+hydra_peers_parameters() {
+  for peer_dir in $(peer_config_dirs)
   do
     test -e ${peer_dir}/ip         || peers_usage "no ip file for peer ${peer_dir}"
     test -e ${peer_dir}/hydra.vk   || peers_usage "no hydra.vk file for peer ${peer_dir}"
@@ -109,6 +124,9 @@ peers_parameters() {
     echo --hydra-verification-key   "${peer_dir}/hydra.vk"
     echo --cardano-verification-key "${peer_dir}/cardano.vk"
   done
+}
+peer_config_dirs() {
+  find ${peers_config_dir} -mindepth 1 -type d
 }
 
 peers_usage() {
@@ -126,16 +144,9 @@ peers_usage() {
 
   usage "$@"
 }
-
 usage() {
   echo "$@" >&2
   exit 1
 }
 
-get_cardano_identity
-get_hydra_verification_key
-
-start_cardano
-run_hydra
-
-# wait -n # exit when any child exists. bash version >= 4.3
+main
