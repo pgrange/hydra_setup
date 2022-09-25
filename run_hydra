@@ -48,3 +48,5 @@ get_cardano_address() {
 
 get_cardano_address
 run_cardano
+
+wait -n # exit when any child exists. bash version >= 4.3

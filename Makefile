@@ -3,8 +3,7 @@ ifneq ( $(shell git submodule status | grep '^[-+]' -c), 0 )
   $(shell git submodule update --init)
 endif
 
-
-image: Dockerfile cardano-node.tar.gz
+image: Dockerfile cardano-node.tar.gz ghcup_install
 	docker build . -t pgrange_cardano-node
 
 run: image volume
@@ -16,11 +15,14 @@ run: image volume
 cardano-node.tar.gz:
 	curl https://hydra.iohk.io/build/16338142/download/1/cardano-node-1.35.0-linux.tar.gz -o cardano-node.tar.gz
 
+ghcup_install:
+	curl https://get-ghcup.haskell.org -o gcup_install
+
 volume:
 	docker volume create cardano-db
 	docker volume create reckless-secret-storage
 
 clean:
-	rm cardano-node.tar.gz
+	rm cardano-node.tar.gz ghcup_install
 
 .phony: image volume run clean
