@@ -80,18 +80,6 @@ echo 'd9QPt7PgxQoWkJtlcWXI77J9gDdF7Fv/HlGzaasyMlk=' | base64 -d > my-hydra-key.v
 
 # Use
 
-Your Cardano address to receive payments:
-
-```bash
-dump_address
-```
-
-Your Cardano verification key:
-
-```bash
-dump_verification_key
-```
-
 To query the blockchain tip of our cardano-node:
 
 ```bash
