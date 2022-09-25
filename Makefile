@@ -3,8 +3,12 @@ ifneq ( $(shell git submodule status | grep '^[-+]' -c), 0 )
   $(shell git submodule update --init)
 endif
 
-image: Dockerfile cardano-node.tar.gz ghcup_install
+build: docker_build_dependencies
 	docker build . -t pgrange_cardano-node
+
+
+# We split build from its dependencies to ease github action integration
+build_dependencies: Dockerfile cardano-node.tar.gz ghcup_install
 
 run: image volume
 	docker run -p 3001:3001 --rm --name hydra \
@@ -25,4 +29,4 @@ volume:
 clean:
 	rm cardano-node.tar.gz ghcup_install
 
-.phony: image volume run clean
+.phony: image volume run clean docker_build_dependencies
