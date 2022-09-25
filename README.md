@@ -37,14 +37,14 @@ Peer configuration must be added in `/srv/etc/hydra/peers/`.
 Create one directory per peer, named after the peers' name.
 Do not store anything else in this directory
 
-In a peer directory, store the followin three files:
+In a peer directory, store the following three files:
  * ip         - contain ip:port address of the peer
  * cardano.vk - contains the cardano verification key of the peer
  * hydra.vk   - contains the hydra verification key of the peer
 
 ## Start the node
 
-The, run the image by attaching these volumes where appropriate:
+Launch a container, attaching these volumes where appropriate:
 
 ```bash
   docker run --rm --name hydra \
@@ -55,7 +55,7 @@ The, run the image by attaching these volumes where appropriate:
 ```
 
 The first time you launch the container, it will generate cardano keys and address and hydra keys.
-These information will be displayed when you launch the container so that you may copy them and share
+These informations will be displayed when you launch the container so that you may copy them and share
 them with your friends you want to create a hydra head with. This will look like this:
 
 ```
