@@ -73,12 +73,15 @@ RUN cabal build hydra-node
 #      machine and save 2 hours of compilation
 RUN git switch master
 RUN cabal build hydra-tools
+RUN cabal build hydra-tui
 
 # Make the following binaries available:
 # * /hydra-node
 # * /hydra-tools
-RUN find dist-newstyle/ -type f -executable -name hydra-node -exec cp {} / \;
+# * /hydra-tui
+RUN find dist-newstyle/ -type f -executable -name hydra-node  -exec cp {} / \;
 RUN find dist-newstyle/ -type f -executable -name hydra-tools -exec cp {} / \;
+RUN find dist-newstyle/ -type f -executable -name hydra-tui   -exec cp {} / \;
 
 # ---------------------------------------------------------------------
 # - install Cardano                                                   -
@@ -108,6 +111,7 @@ RUN mkdir -p /srv/hydra
 RUN mkdir -p /srv/etc/hydra
 COPY --from=compilation /hydra-node /srv/hydra/
 COPY --from=compilation /hydra-tools /srv/hydra/
+COPY --from=compilation /hydra-tui /srv/hydra/
 COPY --from=compilation /srv/hydra-poc/hydra-cluster/config/protocol-parameters.json /srv/etc/hydra/
 ENV HYDRA_SCRIPTS_TX_ID=bde2ca1f404200e78202ec37979174df9941e96fd35c05b3680d79465853a246
 

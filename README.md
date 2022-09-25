@@ -80,11 +80,20 @@ echo 'd9QPt7PgxQoWkJtlcWXI77J9gDdF7Fv/HlGzaasyMlk=' | base64 -d > my-hydra-key.v
 
 # Use
 
-To query the blockchain tip of our cardano-node:
+To query the blockchain tip of our cardano-node to see if it has finished syncronizing:
 
 ```bash
 docker exec -it hydra /srv/cardano/cardano-cli query tip --testnet-magic 2
 ```
+
+To inspect the utxo from your cardano address:
+
+```bash
+docker exec -it hydra bash -c '/srv/cardano/cardano-cli query utxo --address $(cat /srv/var/cardano/secrets/payment.addr) --testnet-magic 2'
+```
+
+You'll need to send test Ada to your address on this node. See 
+https://docs.cardano.org/cardano-testnet/tools/faucet
 
 # Compile
 
