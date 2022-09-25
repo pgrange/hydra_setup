@@ -5,6 +5,7 @@ set -euo pipefail
 PATH=$PATH:/srv/cardano/:/srv/hydra/
 
 secrets_dir=/srv/var/cardano/secrets
+peers_config_dir=/srv/etc/hydra/peers
 
 cardano_verification_key_file="${secrets_dir}/payment.vkey"
 cardano_signing_key_file="${secrets_dir}/payment.skey"
@@ -12,15 +13,33 @@ cardano_address_file="${secrets_dir}/payment.addr"
 
 hydra_key_file_prefix="${secrets_dir}/hydra"
 hydra_verification_key_file="${hydra_key_file_prefix}.vk"
+hydra_signing_key_file="${hydra_key_file_prefix}.sk"
 
-run_cardano() {
+start_cardano() {
   cardano-node run \
     --topology      /srv/etc/cardano/cardano-node/topology.json \
     --database-path /srv/var/cardano/db \
     --socket-path   /srv/var/cardano/node.socket \
     --host-addr     127.0.0.1 \
     --port          3001 \
-    --config        /srv/etc/cardano/cardano-node/config.json
+    --config        /srv/etc/cardano/cardano-node/config.json \
+  &
+  wait_for_cardano_to_start
+}
+
+wait_for_cardano_to_start() {
+  wait_for_cardano_socket() {
+    while ! test -e /srv/var/cardano/node.socket
+    do
+      sleep 1
+    done
+  }
+  export -f wait_for_cardano_socket
+
+  if ! timeout 10 bash -c wait_for_cardano_socket
+  then
+    usage "timeout while waiting for cardano-node to start"
+  fi
 }
 
 gen_cardano_keys() {
@@ -38,8 +57,8 @@ gen_cardano_address() {
 
 get_cardano_identity() {
 
-  test -x "${cardano_verification_key_file}" || gen_cardano_keys
-  test -x "${cardano_address_file}"          || gen_cardano_address
+  test -e "${cardano_verification_key_file}" || gen_cardano_keys
+  test -e "${cardano_address_file}"          || gen_cardano_address
 
 
   echo "# my Cardano versification key"     >&2
@@ -59,15 +78,64 @@ gen_hydra_keys() {
 }
 
 get_hydra_verification_key() {
-  test -x "${hydra_verification_key_file}" || gen_hydra_keys
+  test -e "${hydra_verification_key_file}" || gen_hydra_keys
 
   echo "# my Hydra verification key" >&2
   echo "echo '$(cat  ${hydra_verification_key_file} | base64)' | base64 -d > my-hydra-key.vk" >&2
 }
 
+run_hydra() {
+  hydra-node           \
+    --node-id 1          \
+    --api-host 127.0.0.1 \
+    --host     127.0.0.1 \
+    --hydra-scripts-tx-id "${HYDRA_SCRIPTS_TX_ID}"         \
+    --hydra-signing-key   "${hydra_signing_key_file}"      \
+    --cardano-signing-key "${cardano_signing_key_file}"    \
+    --ledger-genesis /srv/etc/cardano/genesis/shelley.json \
+    --ledger-protocol-parameters /srv/etc/hydra/protocol-parameters.json \
+    --network-id 2 \
+    --node-socket /srv/var/cardano/node.socket \
+    $(peers_parameters)
+}
+
+peers_parameters() {
+  for peer_dir in "${peers_config_dir}"/*
+  do
+    test -e ${peer_dir}/ip         || peers_usage "no ip file for peer ${peer_dir}"
+    test -e ${peer_dir}/hydra.vk   || peers_usage "no hydra.vk file for peer ${peer_dir}"
+    test -e ${peer_dir}/cardano.vk || peers_usage "no cardano.vk file for peer ${peer_dir}"
+    echo --peer                     "$(cat ${peer_dir}/ip)"
+    echo --hydra-verification-key   "${peer_dir}/hydra.vk"
+    echo --cardano-verification-key "${peer_dir}/cardano.vk"
+  done
+}
+
+peers_usage() {
+  echo "Malformed peers configuration" >&2
+  echo                                 >&2
+  echo "Peer configuration should be available in /srv/etc/hydra/peers/" >&2
+  echo "Create one directory per peer, named after the peers name"       >&2
+  echo "Do not store anything else in this directory"                    >&2
+  echo                                                                   >&2
+  echo "In a peer directory, store the followin three files:"              >&2
+  echo " * ip         - contain ip:port address of the peer"               >&2
+  echo " * cardano.vk - contains the cardano verification key of the peer" >&2
+  echo " * hydra.vk   - contains the hydra verification key of the peer"   >&2
+  echo                                                                     >&2
+
+  usage "$@"
+}
+
+usage() {
+  echo "$@" >&2
+  exit 1
+}
+
 get_cardano_identity
 get_hydra_verification_key
 
-run_cardano
+start_cardano
+run_hydra
 
-wait -n # exit when any child exists. bash version >= 4.3
+# wait -n # exit when any child exists. bash version >= 4.3

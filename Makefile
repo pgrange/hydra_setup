@@ -14,6 +14,7 @@ run: build volume
 	docker run -p 3001:3001 --rm --name hydra \
 	--mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' \
 	--mount 'type=volume,src=reckless-secret-storage,dst=/srv/var/cardano/secrets' \
+	--mount 'type=volume,src=hydra-peers,dst=/srv/etc/hydra/peers' \
 	-it pgrange_cardano-node
 
 cardano-node.tar.gz:
@@ -26,6 +27,7 @@ ghcup_install:
 volume:
 	docker volume create cardano-db
 	docker volume create reckless-secret-storage
+	docker volume create hydra-peers
 
 clean:
 	rm cardano-node.tar.gz ghcup_install
