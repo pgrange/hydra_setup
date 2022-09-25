@@ -6,7 +6,6 @@ endif
 build: build_dependencies
 	docker build . -t pgrange_cardano-node
 
-
 # We split build from its dependencies to ease github action integration
 build_dependencies: Dockerfile cardano-node.tar.gz ghcup_install
 
@@ -32,4 +31,4 @@ volume:
 clean:
 	rm cardano-node.tar.gz ghcup_install
 
-.phony: image volume run clean docker_build_dependencies
+.phony: build volume run clean build_dependencies
