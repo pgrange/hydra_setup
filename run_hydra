@@ -19,9 +19,9 @@ main() {
   display_hydra_verification_key
   
   start_cardano
-  run_hydra
+  start_hydra
   
-  # wait -n # exit when any child exists. bash version >= 4.3
+  wait -n # exit when any child exists. bash version >= 4.3
 }
 
 display_cardano_identity() {
@@ -91,7 +91,7 @@ wait_for_cardano_to_start() {
   fi
 }
 
-run_hydra() {
+start_hydra() {
   check_peers_configuration
   hydra-node           \
     --node-id 1          \
@@ -104,7 +104,8 @@ run_hydra() {
     --ledger-protocol-parameters /srv/etc/hydra/protocol-parameters.json \
     --network-id 2 \
     --node-socket /srv/var/cardano/node.socket \
-    $(hydra_peers_parameters)
+    $(hydra_peers_parameters) \
+  &
 }
 check_peers_configuration() {
   for peer_dir in $(peer_config_dirs)
