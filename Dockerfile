@@ -89,9 +89,9 @@ RUN find dist-newstyle/ -type f -executable -name hydra-tui   -exec cp {} / \;
 
 FROM debian:latest
 
-#Work around https://github.com/input-output-hk/cardano-node/issues/2752
+# Install netbase to work around https://github.com/input-output-hk/cardano-node/issues/2752
 RUN apt-get update && \
-    apt-get install -y netbase && \
+    apt-get install -y netbase jq && \
     rm -rf /var/lib/apt/lists/*
 
 ADD cardano-node.tar.gz /srv/cardano
