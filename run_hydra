@@ -71,7 +71,7 @@ start_cardano() {
     --topology      /srv/etc/cardano/cardano-node/topology.json \
     --database-path /srv/var/cardano/db \
     --socket-path   /srv/var/cardano/node.socket \
-    --host-addr     127.0.0.1 \
+    --host-addr     0.0.0.0 \
     --port          3001 \
     --config        /srv/etc/cardano/cardano-node/config.json \
   &
@@ -104,8 +104,8 @@ start_hydra() {
   check_peers_configuration
   hydra-node           \
     --node-id 1          \
-    --api-host 127.0.0.1 \
-    --host     127.0.0.1 \
+    --api-host 0.0.0.0 \
+    --host     0.0.0.0 \
     --hydra-scripts-tx-id "${HYDRA_SCRIPTS_TX_ID}"         \
     --hydra-signing-key   "${hydra_signing_key_file}"      \
     --cardano-signing-key "${cardano_signing_key_file}"    \
