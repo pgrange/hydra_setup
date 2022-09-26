@@ -25,23 +25,6 @@ docker volume create reckless-secret-storage
 docker volume create hydra-peers
 ```
 
-You will then need to setup configuration for your peers you want to open
-your hydra head with. To do so, you may start a new container with the
-peers configuration attached to it:
-
-```bash
-docker run -it --mount 'type=volume,src=hydra-peers,dst=/srv/etc/hydra/peers' debian bash
-```
-
-Peer configuration must be added in `/srv/etc/hydra/peers/`.
-Create one directory per peer, named after the peers' name.
-Do not store anything else in this directory
-
-In a peer directory, store the following three files:
- * ip         - contain ip:port address of the peer
- * cardano.vk - contains the cardano verification key of the peer
- * hydra.vk   - contains the hydra verification key of the peer
-
 ## Start the node
 
 Launch a container, attaching these volumes where appropriate:
@@ -76,8 +59,30 @@ EOF
 
 # my Hydra verification key
 echo 'd9QPt7PgxQoWkJtlcWXI77J9gDdF7Fv/HlGzaasyMlk=' | base64 -d > my-hydra-key.vk
-
 ```
+
+## Meet some friends
+
+You will then need to setup configuration for your peers you want to open
+your hydra head with.
+
+You don't have to do that know, you may skip that for now and come back to this
+section later.
+
+To do so, you may attach to your running container and setup
+configuration:
+
+```bash
+docker exec -it hydra bash
+```
+Peer configuration must be added in `/srv/etc/hydra/peers/`.
+Create one directory per peer, named after the peers' name.
+Do not store anything else in this directory
+
+In a peer directory, store the following three files:
+ * ip         - contain ip:port address of the peer
+ * cardano.vk - contains the cardano verification key of the peer
+ * hydra.vk   - contains the hydra verification key of the peer
 
 # Use
 
@@ -95,6 +100,17 @@ docker exec -it hydra bash -c '/srv/cardano/cardano-cli query utxo --address $(c
 
 You'll need to send test Ada to your address on this node. See 
 https://docs.cardano.org/cardano-testnet/tools/faucet
+
+When you have send funds to your cardano-node address, you will have to mark it as
+hydra fuel before using it in a head. To do so, you can use the fuel-testnet.sh script
+available in the repository (launch it from outside your container):
+
+```bash
+./fuel-testnet.sh 90000000
+```
+
+This will mark 90 test Ada as fuel for hydra. I'm not sure what the appropriate amount is but 90
+looks like a safe minimum for testing.
 
 # Compile
 
