@@ -92,14 +92,12 @@ wait_for_cardano_to_start() {
   fi
 }
 wait_for_era() {
-set -x
   local era="$1"
   while [ "$era" != "$(/srv/cardano/cardano-cli query tip --testnet-magic 2 | jq -r .era)" ]
   do
     echo "Not yet in era ${era}..." >&2
     sleep 5
   done
-set +x
 }
 
 start_hydra() {
