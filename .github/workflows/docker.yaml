@@ -12,7 +12,7 @@ name: Create and publish a Docker image
 on:
   push:
     tags:
-      - *
+      - '*'
 
 env:
   REGISTRY: ghcr.io
