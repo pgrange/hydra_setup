@@ -20,15 +20,15 @@ RUN mkdir -p /srv/var/cardano/
 
 RUN mkdir -p /srv/hydra
 RUN mkdir -p /srv/etc/hydra
-COPY --from=ghcr.io/pgrange/hydra_compilation:latest /hydra-node /srv/hydra/
-COPY --from=ghcr.io/pgrange/hydra_compilation:latest /hydra-tools /srv/hydra/
-COPY --from=ghcr.io/pgrange/hydra_compilation:latest /hydra-tui /srv/hydra/
-COPY --from=ghcr.io/pgrange/hydra_compilation:latest /srv/hydra-poc/hydra-cluster/config/protocol-parameters.json /srv/etc/hydra/
+COPY --from=ghcr.io/pgrange/hydra_compilation:main /hydra-node /srv/hydra/
+COPY --from=ghcr.io/pgrange/hydra_compilation:main /hydra-tools /srv/hydra/
+COPY --from=ghcr.io/pgrange/hydra_compilation:main /hydra-tui /srv/hydra/
+COPY --from=ghcr.io/pgrange/hydra_compilation:main /srv/hydra-poc/hydra-cluster/config/protocol-parameters.json /srv/etc/hydra/
 ENV HYDRA_SCRIPTS_TX_ID=bde2ca1f404200e78202ec37979174df9941e96fd35c05b3680d79465853a246
 
 # hydra-node is not statically linked so we'll need those:
-COPY --from=ghcr.io/pgrange/hydra_compilation:latest /usr/local/lib/libsodium.so.23   /usr/local/lib/libsodium.so.23
-COPY --from=ghcr.io/pgrange/hydra_compilation:latest /usr/local/lib/libsecp256k1.so.0 /usr/local/lib/libsecp256k1.so.0
+COPY --from=ghcr.io/pgrange/hydra_compilation:main /usr/local/lib/libsodium.so.23   /usr/local/lib/libsodium.so.23
+COPY --from=ghcr.io/pgrange/hydra_compilation:main /usr/local/lib/libsecp256k1.so.0 /usr/local/lib/libsecp256k1.so.0
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 # ---------------------------------------------------------------------
