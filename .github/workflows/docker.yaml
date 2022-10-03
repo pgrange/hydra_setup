@@ -12,9 +12,7 @@ name: Create and publish a Docker image
 on:
   push:
     tags:
-      - '*'
-    branches:
-      - 'split_images'
+      - *
 
 env:
   REGISTRY: ghcr.io
@@ -47,19 +45,10 @@ jobs:
       - name: build dependencies
         run: make build_dependencies
 
-      - name: Build and push Docker image for hydra compilation
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          context: .
-          file: Dockerfile.hydra_compilation
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: hydra_compilation
-
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: hydra_setup
+          labels: ${{ steps.meta.outputs.labels }}
