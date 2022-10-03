@@ -131,6 +131,9 @@ a new container from the image with the volumes attached.
 
 You should see cardano blockchain sync logs and hydra logs in the terminal.
 
+Warning! It depends on [hydra_compilation image](https://github.com/pgrange/hydra_compilation) so if you need to change something with the hydra code per se, you'll
+have to take a look at this image.
+
 As of end of september 2022 the preview network takes 10 minutes for a fresh cardano-node to be fully synchronized.
 So for the sake of simplicity, we do not use [mithril](https://github.com/input-output-hk/mithril/tree/main/mithril-client)
 for now and just do a full sync from scratch.
