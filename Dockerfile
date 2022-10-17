@@ -24,6 +24,7 @@ COPY --from=ghcr.io/pgrange/hydra_compilation:main /hydra-node /srv/hydra/
 COPY --from=ghcr.io/pgrange/hydra_compilation:main /hydra-tools /srv/hydra/
 COPY --from=ghcr.io/pgrange/hydra_compilation:main /hydra-tui /srv/hydra/
 COPY --from=ghcr.io/pgrange/hydra_compilation:main /srv/hydra-poc/hydra-cluster/config/protocol-parameters.json /srv/etc/hydra/
+COPY --from=ghcr.io/pgrange/hydra_compilation:main /COMMIT /srv/etc/hydra/
 ENV HYDRA_SCRIPTS_TX_ID=bde2ca1f404200e78202ec37979174df9941e96fd35c05b3680d79465853a246
 
 # hydra-node is not statically linked so we'll need those:
