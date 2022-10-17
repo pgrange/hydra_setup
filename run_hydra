@@ -43,11 +43,13 @@ display_cardano_identity() {
   echo                               >&2
 }
 gen_cardano_keys() {
+  echo "# no Cardano key found, generating them" >&2
   cardano-cli address key-gen \
   --verification-key-file ${cardano_verification_key_file} \
   --signing-key-file      ${cardano_signing_key_file}
 }
 gen_cardano_address() {
+  echo "# no Cardano address found, generating it" >&2
   cardano-cli address build \
   --payment-verification-key-file ${cardano_verification_key_file} \
   --out-file                      ${cardano_address_file} \
@@ -57,11 +59,13 @@ gen_cardano_address() {
 display_hydra_verification_key() {
   test -e "${hydra_verification_key_file}" || gen_hydra_keys
 
-  echo "# my Hydra verification key" >&2
-  echo "echo '$(cat  ${hydra_verification_key_file} | base64)' | base64 -d > my-hydra-key.vk" >&2
-  echo >&2
+  echo "# my Hydra verification key"  >&2
+  echo "cat << EOF > my-hydra-key.vk" >&2
+  cat  ${hydra_verification_key_file} >&2
+  echo                                >&2
 }
 gen_hydra_keys() {
+  echo "# no Hydra key found, generating it" >&2
   hydra-tools gen-hydra-key --output-file "${hydra_key_file_prefix}"
 }
 
