@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker exec -e TERMINFO=/lib/terminfo -it hydra /srv/hydra/hydra-tui --node-socket /srv/var/cardano/node.socket -n 2 -k /srv/var/cardano/secrets/payment.skey
