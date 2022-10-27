@@ -106,7 +106,7 @@ hydra fuel before using it in a head. To do so, you can use the fuel-testnet.sh 
 available in the repository (launch it from outside your container):
 
 ```bash
-./fuel-testnet.sh 90000000
+./utils/fuel-testnet.sh 90000000
 ```
 
 This will mark 90 test Ada as fuel for hydra. I'm not sure what the appropriate amount is but 90
