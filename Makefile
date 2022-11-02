@@ -17,7 +17,7 @@ run: build volume
 	-it pgrange_cardano-node
 
 cardano-node.tar.gz:
-	curl https://hydra.iohk.io/build/16338142/download/1/cardano-node-1.35.0-linux.tar.gz -o cardano-node.tar.gz
+	curl https://hydra.iohk.io/build/16338142/download/1/cardano-node-1.35.4-rc1-linux.tar.gz -o cardano-node.tar.gz
 
 volume:
 	docker volume create cardano-db
