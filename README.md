@@ -21,6 +21,7 @@ To run docker image, you'll need to create several persistent volumes:
 
 ```bash
 docker volume create cardano-db
+docker volume create hydra-db
 docker volume create reckless-secret-storage
 docker volume create hydra-peers
 ```
@@ -32,6 +33,7 @@ Launch a container, attaching these volumes where appropriate:
 ```bash
 docker run --rm --name hydra \
            --mount 'type=volume,src=cardano-db,dst=/srv/var/cardano/db' \
+           --mount 'type=volume,src=hydra-db,dst=/srv/var/hydra/db' \
            --mount 'type=volume,src=reckless-secret-storage,dst=/srv/var/cardano/secrets' \
            --mount 'type=volume,src=hydra-peers,dst=/srv/etc/hydra/peers' \
            --expose 5001 \

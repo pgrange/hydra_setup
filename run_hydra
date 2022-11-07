@@ -71,14 +71,16 @@ gen_hydra_keys() {
 
 
 start_cardano() {
-  cardano-node run \
-    --topology      /srv/etc/cardano/cardano-node/topology.json \
-    --database-path /srv/var/cardano/db \
-    --socket-path   /srv/var/cardano/node.socket \
-    --host-addr     0.0.0.0 \
-    --port          3001 \
-    --config        /srv/etc/cardano/cardano-node/config.json \
-  &
+  (
+    cardano-node run \
+      --topology      /srv/etc/cardano/cardano-node/topology.json \
+      --database-path /srv/var/cardano/db \
+      --socket-path   /srv/var/cardano/node.socket \
+      --host-addr     0.0.0.0 \
+      --port          3001 \
+      --config        /srv/etc/cardano/cardano-node/config.json
+    echo cardano-node stopped with code $? >&2
+  ) &
   wait_for_cardano_to_start
 }
 wait_for_cardano_to_start() {
@@ -106,19 +108,22 @@ wait_for_era() {
 
 start_hydra() {
   check_peers_configuration
-  hydra-node           \
-    --node-id 1          \
-    --api-host 0.0.0.0 \
-    --host     0.0.0.0 \
-    --hydra-scripts-tx-id "${HYDRA_SCRIPTS_TX_ID}"         \
-    --hydra-signing-key   "${hydra_signing_key_file}"      \
-    --cardano-signing-key "${cardano_signing_key_file}"    \
-    --ledger-genesis /srv/etc/cardano/genesis/shelley.json \
-    --ledger-protocol-parameters /srv/etc/hydra/protocol-parameters.json \
-    --network-id 2 \
-    --node-socket /srv/var/cardano/node.socket \
-    $(hydra_peers_parameters) \
-  &
+  (
+    hydra-node           \
+      --node-id 12043 \
+      --api-host 0.0.0.0 \
+      --host     0.0.0.0 \
+      --hydra-scripts-tx-id "${HYDRA_SCRIPTS_TX_ID}"         \
+      --hydra-signing-key   "${hydra_signing_key_file}"      \
+      --cardano-signing-key "${cardano_signing_key_file}"    \
+      --ledger-genesis /srv/etc/cardano/genesis/shelley.json \
+      --ledger-protocol-parameters /srv/etc/hydra/protocol-parameters.json \
+      --network-id 2 \
+      --node-socket /srv/var/cardano/node.socket \
+      --persistence-dir /srv/var/hydra/db \
+      $(hydra_peers_parameters)
+    echo hydra-node stopped with code $? >&2
+    ) &
 }
 check_peers_configuration() {
   for peer_dir in $(peer_config_dirs)
