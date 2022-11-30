@@ -21,7 +21,10 @@ main() {
   display_hydra_verification_key
   
   start_cardano
+
   wait_for_era Babbage
+  wait_for_hydra_scripts_to_be_published
+
   start_hydra
   
   wait -n # exit when any child exists. bash version >= 4.3
@@ -106,6 +109,20 @@ wait_for_era() {
     echo "Not yet in era ${era}..." >&2
     sleep 5
   done
+}
+
+wait_for_hydra_scripts_to_be_published() {
+  local tx_id="$HYDRA_SCRIPTS_TX_ID"
+  while ! tx_published "$tx_id"
+  do
+    echo "Hydra scripts not yet published ${tx_id}..." >&2
+    sleep 10
+  done
+}
+
+tx_published() {
+  local tx_id="$1"
+  /srv/cardano/cardano-cli query utxo --testnet-magic 2 --tx-in "$tx_id#1" | tail -n1 | grep "$tx_id"
 }
 
 start_hydra() {
