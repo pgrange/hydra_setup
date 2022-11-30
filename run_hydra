@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+HYDRA_SCRIPTS_TX_ID=4081fab39728fa3c05c0edc4dc7c0e8c45129ca6b2b70bf8600c1203a79d2c6d
+
 PATH=$PATH:/srv/cardano/:/srv/hydra/
 
 secrets_dir=/srv/var/cardano/secrets
