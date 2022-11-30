@@ -27,8 +27,8 @@ COPY --from=ghcr.io/input-output-hk/hydra-tui:0.8.1 /bin/hydra-tui /srv/hydra/
 # COPY --from=ghcr.io/input-output-hk/hydra-tools@sha256:b0cd2ff21d4688d9acf04a5e43c86960a894d1ae353548facaa36cddf8e26f18 /bin/hydra-tools /srv/hydra/
 # COPY --from=ghcr.io/input-output-hk/hydra-tui@sha256:fb6a32906cb699f46f3978e021dfe3c9e23e064041ad75ade5ae05bcdd5842c5 /bin/hydra-tui /srv/hydra/
 
-#FIXME should get following data in another way
-COPY --from=ghcr.io/pgrange/hydra_compilation:main /srv/hydra-poc/hydra-cluster/config/protocol-parameters.json /srv/etc/hydra/
+ADD https://raw.githubusercontent.com/input-output-hk/hydra/master/hydra-cluster/config/protocol-parameters.json /srv/etc/hydra/
+
 ENV HYDRA_SCRIPTS_TX_ID=4081fab39728fa3c05c0edc4dc7c0e8c45129ca6b2b70bf8600c1203a79d2c6d
 
 ENTRYPOINT [ "/srv/bin/run_hydra" ]
