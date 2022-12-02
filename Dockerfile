@@ -20,12 +20,12 @@ RUN mkdir -p /srv/var/cardano/
 
 RUN mkdir -p /srv/hydra
 RUN mkdir -p /srv/etc/hydra
-COPY --from=ghcr.io/input-output-hk/hydra-node:0.8.1 /bin/hydra-node /srv/hydra/
-COPY --from=ghcr.io/input-output-hk/hydra-tools:0.8.1 /bin/hydra-tools /srv/hydra/
-COPY --from=ghcr.io/input-output-hk/hydra-tui:0.8.1 /bin/hydra-tui /srv/hydra/
-# COPY --from=ghcr.io/input-output-hk/hydra-node@sha256:74bd1509c5626005e68f78343ef728c638241649538c0f2f503ec122285e5c4d /bin/hydra-node /srv/hydra/
-# COPY --from=ghcr.io/input-output-hk/hydra-tools@sha256:b0cd2ff21d4688d9acf04a5e43c86960a894d1ae353548facaa36cddf8e26f18 /bin/hydra-tools /srv/hydra/
-# COPY --from=ghcr.io/input-output-hk/hydra-tui@sha256:fb6a32906cb699f46f3978e021dfe3c9e23e064041ad75ade5ae05bcdd5842c5 /bin/hydra-tui /srv/hydra/
+# COPY --from=ghcr.io/input-output-hk/hydra-node:0.8.1 /bin/hydra-node /srv/hydra/
+# COPY --from=ghcr.io/input-output-hk/hydra-tools:0.8.1 /bin/hydra-tools /srv/hydra/
+# COPY --from=ghcr.io/input-output-hk/hydra-tui:0.8.1 /bin/hydra-tui /srv/hydra/
+COPY --from=ghcr.io/input-output-hk/hydra-node@sha256:4cd4bbaebe2bc3c23943cddc6c0c62a745ef43a33c3feefd4022cb08aafb2873 /bin/hydra-node /srv/hydra/
+COPY --from=ghcr.io/input-output-hk/hydra-tools@sha256:a0c9c2fd5816235133075ee4c98f3fcda9a5d506c63623b60d82237ea41fd271 /bin/hydra-tools /srv/hydra/
+COPY --from=ghcr.io/input-output-hk/hydra-tui@sha256:e106702c3df144bcf594ac61c92216f327152a0f55c4b0a9535183427f11ea0a /bin/hydra-tui /srv/hydra/
 
 ADD https://raw.githubusercontent.com/input-output-hk/hydra/master/hydra-cluster/config/protocol-parameters.json /srv/etc/hydra/
 
