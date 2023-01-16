@@ -23,6 +23,7 @@ cardano-node.tar.gz:
 hydra-node hydra-tools hydra-tui: hydra-x86_64-unknown-linux-musl.zip
 	unzip -D $< $@
 	touch $@
+	chmod +x $@
 
 hydra-x86_64-unknown-linux-musl.zip:
 	#curl --fail --location -o $@ https://github.com/input-output-hk/hydra/releases/download/0.8.1/hydra-x86_64-unknown-linux-musl.zip
