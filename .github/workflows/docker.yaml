@@ -43,7 +43,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: build dependencies
-        run: make build_dependencies
+        run: SOME_TOKEN_WITHOUT_PERMISSIONS=${{ secrets.GITHUB_TOKEN }} make build_dependencies
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
