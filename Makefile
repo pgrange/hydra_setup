@@ -26,8 +26,8 @@ hydra-node hydra-tools hydra-tui: hydra-x86_64-unknown-linux-musl.zip
 	chmod +x $@
 
 hydra-x86_64-unknown-linux-musl.zip:
-	#curl --fail --location -o $@ https://github.com/input-output-hk/hydra/releases/download/0.8.1/hydra-x86_64-unknown-linux-musl.zip
-	curl --fail --location -o $@ -H "Authorization: token ${SOME_TOKEN_WITHOUT_PERMISSIONS}" https://api.github.com/repos/input-output-hk/hydra/actions/artifacts/513013021/zip
+	curl --fail --location -o $@ https://github.com/input-output-hk/hydra/releases/download/0.8.1/hydra-x86_64-unknown-linux-musl.zip
+	#curl --fail --location -o $@ -H "Authorization: token ${SOME_TOKEN_WITHOUT_PERMISSIONS}" https://api.github.com/repos/input-output-hk/hydra/actions/artifacts/513013021/zip
 
 volume:
 	docker volume create cardano-db
