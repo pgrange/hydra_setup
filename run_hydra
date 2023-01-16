@@ -97,7 +97,7 @@ wait_for_cardano_to_start() {
   }
   export -f wait_for_cardano_socket
 
-  if ! timeout 60 bash -c wait_for_cardano_socket
+  if ! timeout 600 bash -c wait_for_cardano_socket
   then
     usage "timeout while waiting for cardano-node to start"
   fi
