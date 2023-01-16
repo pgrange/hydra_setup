@@ -1,2 +1,6 @@
 cardano-node.tar.gz
 ghcup_install
+hydra-node
+hydra-tui
+hydra-tools
+hydra-x86_64-unknown-linux-musl.zip
