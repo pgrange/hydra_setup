@@ -2,7 +2,8 @@
 
 set -euo pipefail
 
-HYDRA_SCRIPTS_TX_ID=74b587d08d12aa679bdfeb3eaa57d698e426045dd529d4130d7d8ca0c18d54b0
+HYDRA_SCRIPTS_TX_ID=6fd13073c47411af7f3adf31f46e61f570872a832822fdc5da5b214766651bfd
+TESTNET_MAGIC=1
 
 PATH=$PATH:/srv/cardano/:/srv/hydra/
 
@@ -58,7 +59,7 @@ gen_cardano_address() {
   cardano-cli address build \
   --payment-verification-key-file ${cardano_verification_key_file} \
   --out-file                      ${cardano_address_file} \
-  --testnet-magic 2
+  --testnet-magic "$TESTNET_MAGIC"
 }
 
 display_hydra_verification_key() {
@@ -104,7 +105,7 @@ wait_for_cardano_to_start() {
 }
 wait_for_era() {
   local era="$1"
-  while [ "$era" != "$(/srv/cardano/cardano-cli query tip --testnet-magic 2 | jq -r .era)" ]
+  while [ "$era" != "$(/srv/cardano/cardano-cli query tip --testnet-magic "$TESTNET_MAGIC" | jq -r .era)" ]
   do
     echo "Not yet in era ${era}..." >&2
     sleep 5
@@ -122,7 +123,7 @@ wait_for_hydra_scripts_to_be_published() {
 
 tx_published() {
   local tx_id="$1"
-  /srv/cardano/cardano-cli query utxo --testnet-magic 2 --tx-in "$tx_id#1" | tail -n1 | grep "$tx_id"
+  /srv/cardano/cardano-cli query utxo --testnet-magic "$TESTNET_MAGIC" --tx-in "$tx_id#1" | tail -n1 | grep "$tx_id"
 }
 
 start_hydra() {
@@ -137,7 +138,7 @@ start_hydra() {
       --cardano-signing-key "${cardano_signing_key_file}"    \
       --ledger-genesis /srv/etc/cardano/genesis/shelley.json \
       --ledger-protocol-parameters /srv/etc/hydra/protocol-parameters.json \
-      --network-id 2 \
+      --network-id "$TESTNET_MAGIC" \
       --node-socket /srv/var/cardano/node.socket \
       --persistence-dir /srv/var/hydra/db \
       $(hydra_peers_parameters)
