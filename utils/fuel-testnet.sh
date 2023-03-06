@@ -14,7 +14,7 @@ function usage() {
 [ ${#} -eq 1 ] || (echo "Wrong number of arguments" && usage)
 amount=${1}
 
-magic=2
+magic=1
 
 addr="$(docker exec -it hydra cat /srv/var/cardano/secrets/payment.addr)"
 
