@@ -59,7 +59,7 @@ gen_cardano_address() {
   cardano-cli address build \
   --payment-verification-key-file ${cardano_verification_key_file} \
   --out-file                      ${cardano_address_file} \
-  --testnet-magic "$TESTNET_MAGIC"
+  --mainnet
 }
 
 display_hydra_verification_key() {
@@ -105,7 +105,7 @@ wait_for_cardano_to_start() {
 }
 wait_for_era() {
   local era="$1"
-  while [ "$era" != "$(/srv/cardano/cardano-cli query tip --testnet-magic "$TESTNET_MAGIC" | jq -r .era)" ]
+  while [ "$era" != "$(/srv/cardano/cardano-cli query tip --mainnet | jq -r .era)" ]
   do
     echo "Not yet in era ${era}..." >&2
     sleep 5
@@ -123,7 +123,7 @@ wait_for_hydra_scripts_to_be_published() {
 
 tx_published() {
   local tx_id="$1"
-  /srv/cardano/cardano-cli query utxo --testnet-magic "$TESTNET_MAGIC" --tx-in "$tx_id#1" | tail -n1 | grep "$tx_id"
+  /srv/cardano/cardano-cli query utxo --mainnet --tx-in "$tx_id#1" | tail -n1 | grep "$tx_id"
 }
 
 start_hydra() {

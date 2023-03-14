@@ -20,7 +20,7 @@ addr="$(docker exec -it hydra cat /srv/var/cardano/secrets/payment.addr)"
 
 utxo=$(docker exec -it hydra /srv/cardano/cardano-cli query utxo \
     --cardano-mode --epoch-slots 21600 \
-    --testnet-magic ${magic} \
+    --mainnet \
     --address "${addr}" \
     --out-file /dev/stdout)
 
@@ -37,7 +37,7 @@ fuelAmount=$(echo ${entries} | jq ".value.value.lovelace - ${amount}")
 
 tx=$(docker exec -it hydra mktemp)
 docker exec -it hydra /srv/cardano/cardano-cli transaction build \
-     --testnet-magic ${magic} \
+     --mainnet \
      --babbage-era \
      --cardano-mode --epoch-slots 21600 \
      --script-valid \
@@ -48,7 +48,7 @@ docker exec -it hydra /srv/cardano/cardano-cli transaction build \
      --out-file ${tx}
 
 docker exec -it hydra /srv/cardano/cardano-cli transaction sign \
-     --testnet-magic ${magic} \
+     --mainnet \
      --tx-body-file ${tx} \
      --signing-key-file /srv/var/cardano/secrets/payment.skey \
      --out-file ${tx}.signed
@@ -56,5 +56,5 @@ docker exec -it hydra /srv/cardano/cardano-cli transaction sign \
 docker exec -it hydra /srv/cardano/cardano-cli transaction submit \
     --cardano-mode \
     --epoch-slots 21600 \
-    --testnet-magic ${magic} \
+    --mainnet \
     --tx-file ${tx}.signed

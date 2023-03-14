@@ -6,7 +6,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ADD cardano-node.tar.gz /srv/cardano
-ADD cardano-configurations/network/preprod \
+ADD cardano-configurations/network/mainnet \
     /srv/etc/cardano
 
 ENV CARDANO_NODE_SOCKET_PATH=/srv/var/cardano/node.socket
