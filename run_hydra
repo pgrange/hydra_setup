@@ -137,7 +137,7 @@ start_hydra() {
       --cardano-signing-key "${cardano_signing_key_file}"    \
       --ledger-genesis /srv/etc/cardano/genesis/shelley.json \
       --ledger-protocol-parameters /srv/etc/hydra/protocol-parameters.json \
-      --network-id "$TESTNET_MAGIC" \
+      --mainnet \
       --node-socket /srv/var/cardano/node.socket \
       --persistence-dir /srv/var/hydra/db \
       $(hydra_peers_parameters)
